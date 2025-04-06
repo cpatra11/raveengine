@@ -33,7 +33,7 @@ export function DashboardHeader({ userName, userEmail }: DashboardHeaderProps) {
           Notifications
         </Button>
         <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
-          {userEmail?.[0]?.toUpperCase() || &quot;U&quot;}
+          {userEmail?.[0]?.toUpperCase() || "U"}
         </div>
       </div>
     </div>
