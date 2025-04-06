@@ -23,8 +23,9 @@ model User {
   provider      String? // Track authentication provider (google, credentials)
   hasPaid       Boolean   @default(false)
 
-  accounts Account[] // Added for OAuth account linkage
-  sessions Session[] // Added for OAuth sessions
+  accounts     Account[] // Added for OAuth account linkage
+  sessions     Session[] // Added for OAuth sessions
+  testimonials Testimonial[]
 }
 
 model Account {
@@ -62,4 +63,16 @@ model VerificationToken {
   type    String?
 
   @@unique([email, token])
+}
+
+model Testimonial {
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  name     String
+  rating   Int?
+  text     String
+  date     DateTime @default(now())
+  source   String? // google, csv, manual, webhook
+  userId   String   @db.ObjectId
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  metadata Json? // For storing additional data like Google Review ID, webhook source, etc.
 }
