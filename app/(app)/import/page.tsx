@@ -244,6 +244,7 @@ export default function ImportPage() {
               Import reviews directly from your Google Business Profile using
               OAuth authentication.
             </p>
+
             <div className="p-4 bg-blue-50 rounded-lg border border-blue-100">
               <p className="text-sm text-blue-700">
                 You&apos;ll need to grant GlowMint permission to access your
