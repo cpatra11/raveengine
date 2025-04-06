@@ -52,8 +52,8 @@ export default async function PaymentPage() {
 
             <div className="mt-6">
               <p className="text-xs text-gray-500 text-center">
-                You'll be redirected to our payment provider to complete your
-                subscription
+                You&apos;ll be redirected to our payment provider to complete
+                your subscription
               </p>
             </div>
           </div>
