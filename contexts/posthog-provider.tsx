@@ -8,24 +8,6 @@ import { usePostHog } from "posthog-js/react";
 import posthog from "posthog-js";
 import { PostHogProvider as PHProvider } from "posthog-js/react";
 
-export function PostHogProvider({ children }: { children: React.ReactNode }) {
-  useEffect(() => {
-    posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY as string, {
-      api_host:
-        process.env.NEXT_PUBLIC_POSTHOG_HOST || "https://eu.i.posthog.com",
-      person_profiles: "identified_only", // or 'always' to create profiles for anonymous users as well
-      capture_pageview: false, // Disable automatic pageview capture, as we capture manually
-    });
-  }, []);
-
-  return (
-    <PHProvider client={posthog}>
-      <SuspendedPostHogPageView />
-      {children}
-    </PHProvider>
-  );
-}
-
 function PostHogPageView() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -48,11 +30,38 @@ function PostHogPageView() {
 
 // Wrap PostHogPageView in Suspense to avoid the useSearchParams usage above
 // from de-opting the whole app into client-side rendering
-// See: https://nextjs.org/docs/messages/deopted-into-client-rendering
 function SuspendedPostHogPageView() {
   return (
     <Suspense fallback={null}>
       <PostHogPageView />
     </Suspense>
+  );
+}
+
+// Initialize PostHog in a way that supports both client and server components
+export function PostHogProvider({ children }: { children: React.ReactNode }) {
+  // Check if we're in the browser
+  const isBrowser = typeof window !== "undefined";
+
+  useEffect(() => {
+    // Initialize PostHog on the client side
+    if (isBrowser && process.env.NEXT_PUBLIC_POSTHOG_KEY) {
+      posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY, {
+        api_host:
+          process.env.NEXT_PUBLIC_POSTHOG_HOST || "https://app.posthog.com",
+        capture_pageview: false, // Disable automatic pageview capture
+        persistence: "localStorage",
+        loaded: (posthog) => {
+          if (process.env.NODE_ENV === "development") posthog.debug();
+        },
+      });
+    }
+  }, [isBrowser]);
+
+  return (
+    <PHProvider client={posthog}>
+      {children}
+      <SuspendedPostHogPageView />
+    </PHProvider>
   );
 }

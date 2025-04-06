@@ -15,7 +15,7 @@ import { LoginSchema } from "@/schemas";
 import { Input } from "@/components/ui/input";
 import { z } from "zod";
 import { Button } from "../ui/button";
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { FormError } from "./form-error";
 import { FormSuccess } from "./form-success";
 import { login } from "@/lib/actions/login";
@@ -24,7 +24,7 @@ import { useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { FcGoogle } from "react-icons/fc";
 
-const LoginForm = () => {
+const LoginFormContent = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -72,106 +72,113 @@ const LoginForm = () => {
     setError("");
 
     try {
-      await signIn("google", {
-        callbackUrl: "/dashboard",
-        redirect: true, // Force redirect handling by NextAuth
-      });
-    } catch (error: any) {
-      // This might not execute as the redirect happens
-      setError("Failed to sign in with Google");
-      console.error("Google sign-in error:", error);
+      await signIn("google", { callbackUrl });
+    } catch (error) {
+      setError("Something went wrong");
       setLoading(false);
     }
   };
 
   return (
-    <CardWrapper
-      headerLabel="Log in to your account"
-      title="Login"
-      backButtonHref="/register"
-      backButtonLabel="Don't have an account? Register here."
-    >
-      {/* Google Auth Button */}
-      <Button
-        type="button"
-        variant="outline"
-        onClick={handleGoogleSignIn}
-        disabled={loading}
-        className="w-full flex items-center justify-center gap-2"
+    <div className="xl:w-1/4 md:w-1/2 w-full px-10 sm:px-0">
+      <CardWrapper
+        headerLabel="Welcome back"
+        title="Sign In"
+        backButtonLabel="Don't have an account?"
+        backButtonHref="/register"
       >
-        <FcGoogle className="h-5 w-5" />
-        Continue with Google
-      </Button>
-
-      {/* OR Separator */}
-      <div className="relative my-4">
-        <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-gray-300" />
-        </div>
-        <div className="relative flex justify-center text-sm">
-          <span className="bg-white px-2 text-gray-500">OR</span>
-        </div>
-      </div>
-
-      {/* Email/Password Form */}
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <div className="space-y-4">
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      placeholder="johndoe@email.com"
-                      type="email"
-                      disabled={loading}
-                      autoComplete="email"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      placeholder="******"
-                      type="password"
-                      disabled={loading}
-                      autoComplete="current-password"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <div className="space-y-4">
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder="Enter your email"
+                        type="email"
+                        disabled={loading}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder="Enter your password"
+                        type="password"
+                        disabled={loading}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Link
+                href="/reset-password"
+                className="text-sm text-blue-600 hover:underline"
+              >
+                Forgot password?
+              </Link>
+            </div>
+            <FormError message={error} />
+            <FormSuccess message={success} />
             <Button
-              size="sm"
-              variant="link"
-              asChild
-              className="px-0 font-normal"
+              type="submit"
+              className="w-full"
+              disabled={loading}
+              variant={loading ? "outline" : "default"}
             >
-              <Link href="/reset-password">Forgot password?</Link>
+              {loading ? "Please wait..." : "Sign In"}
             </Button>
+          </form>
+        </Form>
+
+        {/* Or divider */}
+        <div className="relative my-4">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-gray-200"></div>
           </div>
-          <FormError message={error} />
-          <FormSuccess message={success} />
-          <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? "Signing in..." : "Login with Email"}
-          </Button>
-        </form>
-      </Form>
-    </CardWrapper>
+          <div className="relative flex justify-center text-sm">
+            <span className="px-2 bg-white text-gray-500">
+              Or continue with
+            </span>
+          </div>
+        </div>
+
+        {/* Google Auth */}
+        <Button
+          type="button"
+          variant="outline"
+          onClick={handleGoogleSignIn}
+          disabled={loading}
+          className="w-full"
+        >
+          <FcGoogle className="w-5 h-5 mr-2" />
+          Google
+        </Button>
+      </CardWrapper>
+    </div>
+  );
+};
+
+const LoginForm = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LoginFormContent />
+    </Suspense>
   );
 };
 

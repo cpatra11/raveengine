@@ -1,13 +1,13 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, Suspense } from "react";
 import CardWrapper from "./card-wrapper";
 import { FormSuccess } from "./form-success";
 import { FormError } from "./form-error";
 import { newVerification } from "@/lib/actions/new-verification";
 
-const VerifyEmailForm = () => {
+const VerifyEmailContent = () => {
   const [error, setError] = useState<string | undefined>(undefined);
   const [success, setSuccess] = useState<string | undefined>(undefined);
   const searchParams = useSearchParams();
@@ -43,18 +43,28 @@ const VerifyEmailForm = () => {
   }, [onSubmit]);
 
   return (
-    <CardWrapper
-      headerLabel="Confirming your email address"
-      title="Confirming now..."
-      backButtonHref="/sign-in"
-      backButtonLabel="Back to login"
-    >
-      <div className="flex items-center w-full justify-center">
-        {!success && !error && <p>Loading</p>}
-        <FormSuccess message={success} />
-        {!success && <FormError message={error} />}
-      </div>
-    </CardWrapper>
+    <div className="xl:w-1/4 md:w-1/2 w-full px-10 sm:px-0">
+      <CardWrapper
+        headerLabel="Confirming your verification"
+        title="Email Verification"
+        backButtonLabel="Back to login"
+        backButtonHref="/sign-in"
+      >
+        <div className="flex items-center w-full justify-center">
+          {!success && !error && <span>Verifying...</span>}
+          <FormSuccess message={success} />
+          <FormError message={error} />
+        </div>
+      </CardWrapper>
+    </div>
+  );
+};
+
+const VerifyEmailForm = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <VerifyEmailContent />
+    </Suspense>
   );
 };
 

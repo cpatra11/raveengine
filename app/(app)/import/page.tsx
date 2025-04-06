@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, Suspense } from "react";
 import {
   Upload,
   CheckCircle,
@@ -23,8 +23,7 @@ import {
 } from "@/lib/actions/import-testimonials";
 import { toast } from "sonner";
 
-export default function ImportPage() {
-  // State for direct text input form
+function ImportPageContent() {
   const [textInputForm, setTextInputForm] = useState<TextInputFormValues>({
     name: "",
     rating: 5,
@@ -500,5 +499,13 @@ export default function ImportPage() {
         </div>
       </Tabs>
     </div>
+  );
+}
+
+export default function ImportPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ImportPageContent />
+    </Suspense>
   );
 }
