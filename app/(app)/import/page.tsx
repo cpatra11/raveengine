@@ -246,8 +246,8 @@ export default function ImportPage() {
             </p>
             <div className="p-4 bg-blue-50 rounded-lg border border-blue-100">
               <p className="text-sm text-blue-700">
-                You'll need to grant GlowMint permission to access your Google
-                Business Profile reviews.
+                You&apos;ll need to grant GlowMint permission to access your
+                Google Business Profile reviews.
               </p>
             </div>
             <button
