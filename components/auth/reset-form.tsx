@@ -40,7 +40,7 @@ const ResetForm = () => {
 
   useEffect(() => {
     onSubmit();
-  }, []);
+  }, [onSubmit]);
 
   return (
     <CardWrapper
