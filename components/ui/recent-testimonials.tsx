@@ -45,8 +45,8 @@ export function RecentTestimonials() {
                   Google Review
                 </td>
                 <td className="px-6 py-4 text-sm text-gray-500 max-w-xs truncate">
-                  "Their service completely transformed our customer acquisition
-                  process..."
+                  &ldquo;Their service completely transformed our customer
+                  acquisition process...&rdquo;
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                   High Value
@@ -75,8 +75,8 @@ export function RecentTestimonials() {
                   Trustpilot
                 </td>
                 <td className="px-6 py-4 text-sm text-gray-500 max-w-xs truncate">
-                  "We've been using their platform for 6 months and have seen a
-                  40% increase in conversion..."
+                  &ldquo;We&apos;ve been using their platform for 6 months and
+                  have seen a 40% increase in conversion...&rdquo;
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                   Case Study
