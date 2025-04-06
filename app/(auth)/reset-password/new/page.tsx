@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, Suspense } from "react";
 import CardWrapper from "@/components/auth/card-wrapper";
 import { resetPasswordWithToken } from "@/lib/actions/reset-password";
 import bcrypt from "bcryptjs";
@@ -23,7 +23,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { NewPasswordSchema } from "@/schemas";
 import { FormSuccess } from "@/components/auth/form-success";
 
-const NewPassword = () => {
+const NewPasswordForm = () => {
   const [error, setError] = useState<string | undefined>(undefined);
   const [success, setSuccess] = useState<string | undefined>(undefined);
   const [loading, setLoading] = useState(false);
@@ -128,6 +128,15 @@ const NewPassword = () => {
         </Form>
       </CardWrapper>
     </div>
+  );
+};
+
+// Wrap the component in Suspense
+const NewPassword = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <NewPasswordForm />
+    </Suspense>
   );
 };
 
